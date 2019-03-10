@@ -11,7 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Entity(repositoryClass="App\Repository\CoachRepository")
  * @UniqueEntity(fields="name", message="Name already taken")
  */
-class Coach implements UserInterface
+class Coach extends ApiEntity implements UserInterface
 {
     /**
      * @ORM\Id()
