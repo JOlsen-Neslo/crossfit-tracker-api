@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Schema\Credentials;
 use App\Services\ServiceContainer;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;

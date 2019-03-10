@@ -13,12 +13,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class Coach extends ApiEntity implements UserInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     */
-    private $id;
 
     /**
      * @ORM\Column(type="string", length=191, unique=true)
@@ -31,11 +25,6 @@ class Coach extends ApiEntity implements UserInterface
      * @Assert\NotBlank()
      */
     private $password;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getName(): ?string
     {

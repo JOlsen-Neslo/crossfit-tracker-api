@@ -9,12 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ApiToken extends ApiEntity
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -37,11 +31,6 @@ class ApiToken extends ApiEntity
         $this->token = bin2hex(random_bytes(60));
         $this->coach = $coach;
         $this->expiresAt = new \DateTime('+1 hour');
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function getToken(): ?string
