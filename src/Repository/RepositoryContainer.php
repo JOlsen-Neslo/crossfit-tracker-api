@@ -7,11 +7,14 @@ class RepositoryContainer
 
     private $coachRepository;
     private $tokenRepository;
+    private $classRepository;
 
-    public function __construct(CoachRepository $coachRepository, ApiTokenRepository $tokenRepository)
+    public function __construct(CoachRepository $coachRepository, ApiTokenRepository $tokenRepository,
+                                CrossfitClassRepository $classRepository)
     {
         $this->coachRepository = $coachRepository;
         $this->tokenRepository = $tokenRepository;
+        $this->classRepository = $classRepository;
     }
 
     public function getCoachRepository()
@@ -22,6 +25,11 @@ class RepositoryContainer
     public function getTokenRepository()
     {
         return $this->tokenRepository;
+    }
+
+    public function getClassRepository()
+    {
+        return $this->classRepository;
     }
 
 }

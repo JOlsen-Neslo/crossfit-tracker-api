@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
@@ -14,28 +15,33 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 class ApiTokenAuthenticator extends AbstractGuardAuthenticator
 {
     private $apiTokenRepo;
+    private $security;
 
-    public function __construct(ApiTokenRepository $apiTokenRepo)
+    public function __construct(ApiTokenRepository $apiTokenRepo, Security $security)
     {
         $this->apiTokenRepo = $apiTokenRepo;
+        $this->security = $security;
     }
 
     public function supports(Request $request)
     {
-        return $request->headers->has("Authorization")
-            && 0 === strpos($request->headers->get("Authorization"), "Bearer ");
+        if ($this->security->getUser() || $this->security->getToken()) {
+            return false;
+        }
+
+        return $request->attributes->get("_route") !== "coach_auth";
     }
 
     public function getCredentials(Request $request)
     {
-        $authorizationHeader = $request->headers->get('Authorization');
+        $authorizationHeader = $request->headers->get("Authorization");
         return substr($authorizationHeader, 7);
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $token = $this->apiTokenRepo->findOneBy([
-            'token' => $credentials
+            "token" => $credentials
         ]);
 
         if (!$token) {

@@ -32,4 +32,9 @@ class CoachService
         return $savedCoach;
     }
 
+    public function find($name)
+    {
+        return $this->coachRepository->findOneBy(["name" => $name]);
+    }
+
 }

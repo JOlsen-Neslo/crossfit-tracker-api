@@ -13,11 +13,13 @@ class CoachController extends ApiController
 
     private $coachService;
     private $tokenService;
+    private $classService;
 
     public function __construct(ServiceContainer $container)
     {
         $this->coachService = $container->getCoachService();
         $this->tokenService = $container->getTokenService();
+        $this->classService = $container->getClassService();
     }
 
     /**
@@ -47,6 +49,36 @@ class CoachController extends ApiController
 
         $logger->info("Authenticated..");
         return JsonResponse::create(["token" => $token->getToken()]);
+    }
+
+
+    /**
+     * The endpoint to register a class for a coach
+     *
+     * @Route("/coach/{name}/class", methods="POST", name="coach_class_create")
+     * @return JsonResponse
+     */
+    public function createClass($name, Request $request, LoggerInterface $logger)
+    {
+        $logger->info("Entered class creation..");
+
+        $class = $this->transformJsonBody($request);
+        if (!$class) {
+            $logger->error("The request supplied is invalid");
+            return JsonResponse::create(["error" => "The request supplied is invalid"], self::BAD_REQUEST);
+        }
+
+        $savedCoach = $this->coachService->find($name);
+        if (!$savedCoach) {
+            $logger->error("The coach name supplied does not exist.");
+            return JsonResponse::create(["error" => "The coach name supplied does not exist."], self::NOT_FOUND);
+        }
+
+        $class['coach'] = $savedCoach;
+        $class = $this->classService->create($class);
+
+        $logger->info("Class created..");
+        return JsonResponse::create(["class" => $class], self::CREATED);
     }
 
 }

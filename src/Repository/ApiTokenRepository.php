@@ -21,7 +21,7 @@ class ApiTokenRepository extends ServiceEntityRepository implements IRepository
         parent::__construct($registry, ApiToken::class);
     }
 
-    public function create(ApiEntity $entity): ApiEntity
+    public function create(ApiEntity $entity): ?ApiEntity
     {
         try {
             $this->getEntityManager()->persist($entity);
@@ -33,7 +33,7 @@ class ApiTokenRepository extends ServiceEntityRepository implements IRepository
         }
     }
 
-    public function update(ApiEntity $entity): ApiEntity
+    public function update(ApiEntity $entity): ?ApiEntity
     {
         try {
             $entity = $this->getEntityManager()->merge($entity);

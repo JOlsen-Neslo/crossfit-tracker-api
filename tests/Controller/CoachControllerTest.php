@@ -10,6 +10,7 @@ class CoachControllerTest extends WebTestCase
 {
 
     private $client;
+    private $headers;
 
     public function setUp()
     {
@@ -19,6 +20,8 @@ class CoachControllerTest extends WebTestCase
                 'exceptions' => false
             ]
         ]);
+
+        $this->headers = ["Authorization" => "Bearer testtoken"];
     }
 
     public function testAuth()
@@ -76,6 +79,69 @@ class CoachControllerTest extends WebTestCase
         } catch (ClientException $e) {
             $this->assertEquals(400, $e->getResponse()->getStatusCode());
             $this->assertEquals("Bad Request", $e->getResponse()->getReasonPhrase());
+        }
+    }
+
+    public function testCreateClass()
+    {
+        $data = array(
+            'dateTime' => new \DateTime(),
+            'duration' => "200",
+            "athletes" => [
+                array("name" => "athelete1", "member" => true),
+                array("name" => "secondAthlete", "member" => false)
+            ]
+        );
+
+        $response = $this->client->post('/coach/Coach/class', [
+            'headers' => $this->headers,
+            'body' => json_encode($data)
+        ]);
+
+        $this->assertEquals(201, $response->getStatusCode());
+    }
+
+    public function testCreateClassNoCoach()
+    {
+        $data = array(
+            'dateTime' => new \DateTime(),
+            'duration' => "200",
+            "athletes" => [
+                array("name" => "athelete1", "member" => true),
+                array("name" => "secondAthlete", "member" => false)
+            ]
+        );
+
+        try {
+            $this->client->post('/coach/Nobody/class', [
+                'headers' => $this->headers,
+                'body' => json_encode($data)
+            ]);
+        } catch (ClientException $e) {
+            $this->assertEquals(404, $e->getResponse()->getStatusCode());
+            $this->assertEquals("Not Found", $e->getResponse()->getReasonPhrase());
+        }
+    }
+
+    public function testCreateClassNoBody()
+    {
+        try {
+            $this->client->post('/coach/Coach/class', [
+                'headers' => $this->headers,
+            ]);
+        } catch (ClientException $e) {
+            $this->assertEquals(400, $e->getResponse()->getStatusCode());
+            $this->assertEquals("Bad Request", $e->getResponse()->getReasonPhrase());
+        }
+    }
+
+    public function testCreateClassNoHeaders()
+    {
+        try {
+            $this->client->post('/coach/Coach/class', []);
+        } catch (ClientException $e) {
+            $this->assertEquals(401, $e->getResponse()->getStatusCode());
+            $this->assertEquals("Unauthorized", $e->getResponse()->getReasonPhrase());
         }
     }
 
