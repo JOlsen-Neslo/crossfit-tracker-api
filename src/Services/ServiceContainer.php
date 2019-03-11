@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
+use App\Services\Athlete\AthleteService;
 use App\Services\Coach\CoachService;
-use App\Services\Token\TokenService;
 use App\Services\CrossfitClass\ClassService;
+use App\Services\Token\TokenService;
 
 class ServiceContainer
 {
@@ -12,12 +13,15 @@ class ServiceContainer
     private $coachService;
     private $tokenService;
     private $classService;
+    private $athleteService;
 
-    public function __construct(CoachService $coachService, TokenService $tokenService, ClassService $classService)
+    public function __construct(CoachService $coachService, TokenService $tokenService,
+                                ClassService $classService, AthleteService $athleteService)
     {
         $this->coachService = $coachService;
         $this->tokenService = $tokenService;
         $this->classService = $classService;
+        $this->athleteService = $athleteService;
     }
 
     public function getCoachService()
@@ -33,5 +37,10 @@ class ServiceContainer
     public function getClassService()
     {
         return $this->classService;
+    }
+
+    public function getAthleteService()
+    {
+        return $this->athleteService;
     }
 }

@@ -25,10 +25,6 @@ class ApiTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function supports(Request $request)
     {
-        if ($this->security->getUser() || $this->security->getToken()) {
-            return false;
-        }
-
         return $request->attributes->get("_route") !== "coach_auth";
     }
 

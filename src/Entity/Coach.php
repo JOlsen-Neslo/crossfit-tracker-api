@@ -11,7 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Entity(repositoryClass="App\Repository\CoachRepository")
  * @UniqueEntity(fields="name", message="Name already taken")
  */
-class Coach extends ApiEntity implements UserInterface
+class Coach extends ApiEntity implements UserInterface, \JsonSerializable
 {
 
     /**
@@ -100,5 +100,21 @@ class Coach extends ApiEntity implements UserInterface
     public function eraseCredentials()
     {
         return;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        return [
+            "id" => $this->getId(),
+            "name" => $this->name,
+            "password" => $this->password
+        ];
     }
 }

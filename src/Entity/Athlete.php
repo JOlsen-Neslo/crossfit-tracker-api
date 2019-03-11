@@ -9,14 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AthleteRepository")
  */
-class Athlete
+class Athlete extends ApiEntity implements \JsonSerializable
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -29,18 +23,13 @@ class Athlete
     private $member;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\CrossfitClass", mappedBy="athletes")
+     * @ORM\ManyToMany(targetEntity="App\Entity\CrossfitClass", mappedBy="athletes", fetch="EAGER")
      */
     private $classes;
 
     public function __construct()
     {
         $this->classes = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function getName(): ?string
@@ -95,4 +84,20 @@ class Athlete
         return $this;
     }
 
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        return [
+            "id" => $this->getId(),
+            "name" => $this->name,
+            "member" => $this->member,
+            "classes" => $this->classes
+        ];
+    }
 }

@@ -25,7 +25,7 @@ class CoachController extends ApiController
     /**
      * The endpoint to authenticate a coach as a user of the application.
      *
-     * @Route("/coach/auth", methods="POST", name="coach_auth")
+     * @Route("/api/coach/auth", methods="POST", name="coach_auth")
      * @return JsonResponse
      */
     public function authenticate(Request $request, LoggerInterface $logger)
@@ -51,11 +51,36 @@ class CoachController extends ApiController
         return JsonResponse::create(["token" => $token->getToken()]);
     }
 
+    /**
+     * The endpoint to retrieve all classes for a coach
+     *
+     * @Route("/api/coach/{name}/class", methods="GET", name="coach_class_list_retrieve")
+     * @return JsonResponse
+     */
+    public function getClasses($name, LoggerInterface $logger)
+    {
+        $logger->info("Entered class list retrieval..");
+        if (!$name) {
+            $logger->error("The coach name needs to be present.");
+            return JsonResponse::create(["error" => "Please supply a coach name."], self::BAD_REQUEST);
+        }
+
+        $savedCoach = $this->coachService->find($name);
+        if (!$savedCoach) {
+            $logger->error("The coach name supplied does not exist.");
+            return JsonResponse::create(["error" => "The coach name supplied does not exist."], self::NOT_FOUND);
+        }
+
+        $classes = $this->classService->findByCoach($savedCoach);
+
+        $logger->info("Class list retrieved..");
+        return JsonResponse::create($classes);
+    }
 
     /**
      * The endpoint to register a class for a coach
      *
-     * @Route("/coach/{name}/class", methods="POST", name="coach_class_create")
+     * @Route("/api/coach/{name}/class", methods="POST", name="coach_class_create")
      * @return JsonResponse
      */
     public function createClass($name, Request $request, LoggerInterface $logger)
@@ -79,6 +104,43 @@ class CoachController extends ApiController
 
         $logger->info("Class created..");
         return JsonResponse::create(["class" => $class], self::CREATED);
+    }
+
+    /**
+     * The endpoint to retrieve all classes for a coach
+     *
+     * @Route("/api/coach/{name}/class/{id}", methods="GET", name="coach_class_retrieve")
+     * @return JsonResponse
+     */
+    public function getClass($name, $id, LoggerInterface $logger)
+    {
+        $logger->info("Entered class retrieval..");
+        if (!$name) {
+            $logger->error("The coach name needs to be present.");
+            return JsonResponse::create(["error" => "Please supply a coach name."], self::BAD_REQUEST);
+        }
+
+        if (!$id) {
+            $logger->error("The id of the class need to be present.");
+            return JsonResponse::create(["error" => "Please supply a class id to retrieve."], self::BAD_REQUEST);
+        }
+
+        $savedCoach = $this->coachService->find($name);
+        if (!$savedCoach) {
+            $logger->error("The coach name supplied does not exist.");
+            return JsonResponse::create(["error" => "The coach name supplied does not exist."], self::NOT_FOUND);
+        }
+
+        $class = $this->classService->findSingleClass($id);
+        if (!$class) {
+            $logger->error("The class id supplied does not exist.");
+            return JsonResponse::create(["error" => "The class id supplied does not exist."], self::NOT_FOUND);
+        }
+
+        $logger->info(json_encode($class));
+
+        $logger->info("Class retrieved..");
+        return JsonResponse::create($class);
     }
 
 }

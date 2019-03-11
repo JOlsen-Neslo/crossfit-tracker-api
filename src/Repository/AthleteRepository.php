@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Athlete;
+use App\Entity\CrossfitClass;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -17,6 +18,16 @@ class AthleteRepository extends ServiceEntityRepository
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Athlete::class);
+    }
+
+    public function findByClass(CrossfitClass $class)
+    {
+        $qb = $this->createQueryBuilder('a');
+        $results = $qb->join('a.classes', 'c')
+            ->where($qb->expr()->eq('c.id', $class->getId()))
+            ->getQuery()
+            ->getResult();
+        return $results;
     }
 
     // /**
