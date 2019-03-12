@@ -52,6 +52,32 @@ class CoachController extends ApiController
     }
 
     /**
+     * The endpoint to register a new coach.
+     *
+     * @Route("/api/coach", methods="POST", name="coach_create")
+     * @return JsonResponse
+     */
+    public function register(Request $request, LoggerInterface $logger)
+    {
+        $logger->info("Entered register..");
+
+        $coach = $this->transformJsonBody($request);
+        if (!$coach) {
+            $logger->error("The request supplied is invalid");
+            return JsonResponse::create(["error" => "The request supplied is invalid"], self::BAD_REQUEST);
+        }
+
+        $savedCoach = $this->coachService->create($coach);
+        if (!$savedCoach) {
+            $logger->error("Failed to register the coach");
+            return JsonResponse::create(["error" => "We were unable to register the new coach"], self::INTERNAL_SERVER_ERROR);
+        }
+
+        $logger->info("Registered..");
+        return JsonResponse::create($savedCoach, self::CREATED);
+    }
+
+    /**
      * The endpoint to retrieve all classes for a coach
      *
      * @Route("/api/coach/{name}/class", methods="GET", name="coach_class_list_retrieve")

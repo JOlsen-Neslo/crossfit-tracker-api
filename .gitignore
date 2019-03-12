@@ -23,3 +23,5 @@
 .phpunit
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
+
+.docker/data

@@ -32,9 +32,24 @@ class CoachService
         return $savedCoach;
     }
 
+    public function create(array $classData): ?Coach
+    {
+        $class = $this->transform($classData);
+        return $this->coachRepository->create($class);
+    }
+
     public function find($name)
     {
         return $this->coachRepository->findOneBy(["name" => $name]);
+    }
+
+    public function transform(array $data): Coach
+    {
+        $coach = new Coach();
+        $coach->setName($data["name"]);
+        $coach->setPassword($data["password"]);
+
+        return $coach;
     }
 
 }
