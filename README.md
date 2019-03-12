@@ -40,6 +40,12 @@ Make sure you have a local MySQL instance. The script to create the database is 
 
     $ .docker/mysql/scripts/init_db.sql
 
+You will then need to modify the .env file to point to your local instance:
+
+    DATABASE_URL=mysql://root:root@mysql:3306/crossfit_tracker
+    # Comment out the above property and uncomment below for running locally
+    #DATABASE_URL=mysql://root:root@localhost:3306/crossfit_tracker
+
 From there, run the migrations to initialize the database:
 
     $ php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
