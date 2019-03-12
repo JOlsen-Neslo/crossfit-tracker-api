@@ -19,6 +19,13 @@ each object is responsible for its own behaviour and by abstracting the code as 
 
 ## Running the application
 
+Ensure you have PHP and Composer installed before running any of the following commands.
+Also ensure you have the curl extension enabled on your php.ini file.
+
+Run the composer install:
+
+    $ composer install
+
 The most ideal way to run the application is using docker and docker compose.
 If you have these installed, execute the following commands:
 

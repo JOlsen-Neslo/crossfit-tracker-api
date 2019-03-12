@@ -1,4 +1,2 @@
 # Set the default behavior, in case people don't have core.autocrlf set.
-* text eol=lf
-*.sh text eol=lf
-*.php text eol=lf
+* text=auto
